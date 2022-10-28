@@ -1,0 +1,1 @@
+# Hosteur Ragnarokkr SonarQube Template

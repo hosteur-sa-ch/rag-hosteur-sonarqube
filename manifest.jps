@@ -1,0 +1,61 @@
+version: '1.0.0'
+appVersion: latest
+type: install
+id: hstsonarqube
+name: Hosteur SonarQube
+baseUrl: https://raw.githubusercontent.com/hosteur-sa-ch/rag-hosteur-sonarqube/main
+logo: /img/logo.png
+homepage: https://www.sonarqube.org/community/
+ssl: true
+skipNodeEmails: true
+
+categories:
+  - apps/dev
+  - apps/popular
+
+description:
+  text: /texts/description.md
+
+
+nodes:
+  - nodeType: haproxy
+    cloudlets: 4
+    nodeGroup: lb
+    skipNodeEmails: true
+  - nodeType: postgres14
+    cloudlets: 32
+    cluster: false
+    skipNodeEmails: true
+    nodeGroup: sqldb
+  - image: sonarqube:lts-community
+    nodeGroup: cp
+    cloudlets: 16
+    skipNodeEmails: true
+    dockerEnvVars:
+        SONAR_JDBC_URL: jdbc:postgresql://${nodes.postgres14.address}:5432/sonar
+        SONAR_JDBC_USERNAME: webadmin
+        SONAR_JDBC_PASSWORD: ${nodes.postgres14.password}
+    dockerVolumes:
+      - "sonarqube_data:/opt/sonarqube/data"
+      - "sonarqube_extensions:/opt/sonarqube/extensions"
+      - "sonarqube_logs:/opt/sonarqube/logs"
+
+
+
+success: 
+  email: |
+    **SonarQube Admin**
+
+    **URL**: [Portal](${env.protocol}://${env.domain}/)
+
+    **User**: admin
+
+    **Password**: admin (change it ate first login)
+  text: |
+    **SonarQube Admin**
+
+    **URL**: [Portal](${env.protocol}://${env.domain}/)
+
+    **User**: admin
+
+    **Password**: admin (change it ate first login)

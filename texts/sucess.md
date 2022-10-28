@@ -1,1 +1,1 @@
-Installation Completed
+Sonar Qube Installation Completed
